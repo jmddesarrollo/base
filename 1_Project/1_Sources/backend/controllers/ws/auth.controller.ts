@@ -121,16 +121,15 @@ export class AuthController {
 
             const route = config.url + '/recovery/' + token;
 
-            const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-            const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+            const dirLogo = path.resolve('./files/images/logo.png');
 
             let message = {
                 from: process.env.APP_MAILER_USER,
                 to: user.email,
-                subject: '[YToledo - Club de Senderismo] Regenerar la contraseña',
+                subject: '[App Base] Regenerar la contraseña',
                 html: `
                     <div>                        
-                        <div>Se ha realizado una solicitud para regenerar la contraseña para la cuenta vinculada a tu email en la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+                        <div>Se ha realizado una solicitud para regenerar la contraseña para la cuenta vinculada a tu email en la aplicación de <a href="${config.url}">"App Base"</a>. </div>
                         <div>Por favor, si no has solicitado la regeneración de la contraseña, omite este correo electrónico.</div>
                         <br>
                         <div>Puedes usar este enlace para regenerar tu contraseña:</div>
@@ -142,14 +141,9 @@ export class AuthController {
                     ${signatureHTML}
             `,
                 attachments: [{
-                    filename: 'logo_YToledo.png',
+                    filename: 'logo.png',
                     path: dirLogo,
                     cid: 'logo'
-                },
-                {
-                    filename: 'logo_green.jpg',
-                    path: dirLogoGreen,
-                    cid: 'green'
                 }]
             }
 

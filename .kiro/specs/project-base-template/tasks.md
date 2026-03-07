@@ -122,13 +122,13 @@
 - [ ] 6.1.6 Agregar ruta `/home` en `app-routing.module.ts`
 - [ ] 6.1.7 Configurar `/home` como ruta por defecto
 
-## 7. Reorganizar Estructura de Carpetas
+## 7. Reorganizar Estructura de Carpetas [OMITIDA - No se ejecutará]
 
-### 7.1 Crear Carpeta de Ejemplos
+### 7.1 Crear Carpeta de Ejemplos [OMITIDA]
 - [ ] 7.1.1 Crear estructura `1_Project/4_Database/examples/routes-module/`
 - [ ] 7.1.2 Crear subcarpetas: `backend/`, `frontend/`, `database/`
 
-### 7.2 Mover Código de Rutas a Ejemplos
+### 7.2 Mover Código de Rutas a Ejemplos [OMITIDA]
 - [ ] 7.2.1 Copiar `route.model.ts` (backend) a `examples/routes-module/backend/models/`
 - [ ] 7.2.2 Copiar `route.controller.ts` a `examples/routes-module/backend/controllers/`
 - [ ] 7.2.3 Copiar servicios de rutas a `examples/routes-module/backend/services/`
@@ -137,12 +137,12 @@
 - [ ] 7.2.6 Copiar servicios de rutas (frontend) a `examples/routes-module/frontend/services/`
 - [ ] 7.2.7 Crear SQL con tabla routes en `examples/routes-module/database/routes-table.sql`
 
-### 7.3 Crear README para Ejemplos
+### 7.3 Crear README para Ejemplos [OMITIDA]
 - [ ] 7.3.1 Crear `examples/routes-module/README.md` explicando el módulo
 - [ ] 7.3.2 Crear `examples/routes-module/backend/README.md` con instrucciones backend
 - [ ] 7.3.3 Crear `examples/routes-module/frontend/README.md` con instrucciones frontend
 
-### 7.4 Renombrar Carpetas Principales
+### 7.4 Renombrar Carpetas Principales [OMITIDA]
 - [ ] 7.4.1 Considerar renombrar `1_Project` a nombre más descriptivo (opcional)
 - [ ] 7.4.2 Actualizar referencias en documentación
 

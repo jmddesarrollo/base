@@ -23,8 +23,7 @@ export default class EmailService {
 
         const route = config.url;
 
-        const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-        const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+        const dirLogo = path.resolve('./files/images/logo.png');
 
         let plus = `<div>Puedes usar este enlace para generar tu contraseña: </div>`;
         if (user.active) {
@@ -32,12 +31,12 @@ export default class EmailService {
         }
 
         let message = {
-            from: process.env.JMD_MAILER_USER,
+            from: process.env.APP_MAILER_USER,
             to: user.email,
-            subject: '[YToledo - Club de Senderismo] Alta de usuario',
+            subject: '[App Base] Alta de usuario',
             html: `
             <div>
-                <div>Se ha dado de alta una cuenta de usuario vinculada a tu email en la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+                <div>Se ha dado de alta una cuenta de usuario vinculada a tu email en la aplicación de <a href="${config.url}">"App Base"</a>. </div>
                 <div>La cuenta creada tiene la siguiente información: </div>
                 <table style="width:90%; margin-left: 30px;">
                     <tr>
@@ -75,14 +74,9 @@ export default class EmailService {
             ${signatureHTML}
             `,
             attachments: [{
-                filename: 'logo_YToledo.png',
+                filename: 'logo.png',
                 path: dirLogo,
                 cid: 'logo'
-            },
-            {
-                filename: 'logo_green.jpg',
-                path: dirLogoGreen,
-                cid: 'green'
             }]
         }
 
@@ -95,16 +89,15 @@ export default class EmailService {
      public async sendEmailUserEdit(user: any, role: any) {
         const mailSMTP = new mailSMTPClass();        
 
-        const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-        const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+        const dirLogo = path.resolve('./files/images/logo.png');
 
         let message = {
-            from: process.env.JMD_MAILER_USER,
+            from: process.env.APP_MAILER_USER,
             to: user.email,
-            subject: '[YToledo - Club de Senderismo] Edición de usuario',
+            subject: '[App Base] Edición de usuario',
             html: `
             <div>
-                <div>Se ha editado la cuenta de usuario vinculada a tu email en la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+                <div>Se ha editado la cuenta de usuario vinculada a tu email en la aplicación de <a href="${config.url}">"App Base"</a>. </div>
                 <div>La cuenta editada tiene la siguiente información: </div>
                 <table style="width:90%; margin-left: 30px;">
                     <tr>
@@ -137,14 +130,9 @@ export default class EmailService {
             ${signatureHTML}
             `,
             attachments: [{
-                filename: 'logo_YToledo.png',
+                filename: 'logo.png',
                 path: dirLogo,
                 cid: 'logo'
-            },
-            {
-                filename: 'logo_green.jpg',
-                path: dirLogoGreen,
-                cid: 'green'
             }]
         }
 
@@ -157,29 +145,23 @@ export default class EmailService {
      public async sendEmailUserEditEmail(user: any) {
         const mailSMTP = new mailSMTPClass();        
     
-        const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-        const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+        const dirLogo = path.resolve('./files/images/logo.png');
     
         let message = {
-            from: process.env.JMD_MAILER_USER,
+            from: process.env.APP_MAILER_USER,
             to: user.email,
-            subject: '[YToledo - Club de Senderismo] Email desvinculado',
+            subject: '[App Base] Email desvinculado',
             html: `
             <div>
-                <div>Se ha desvinculado tu email en la cuenta de usuario de la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+                <div>Se ha desvinculado tu email en la cuenta de usuario de la aplicación de <a href="${config.url}">"App Base"</a>. </div>
                 <br>                        
             </div>
             ${signatureHTML}
             `,
             attachments: [{
-                filename: 'logo_YToledo.png',
+                filename: 'logo.png',
                 path: dirLogo,
                 cid: 'logo'
-            },
-            {
-                filename: 'logo_green.jpg',
-                path: dirLogoGreen,
-                cid: 'green'
             }]
         }
     
@@ -192,32 +174,26 @@ export default class EmailService {
      public async sendEmailUserEditActivate(user: any) {
         const mailSMTP = new mailSMTPClass();        
     
-        const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-        const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+        const dirLogo = path.resolve('./files/images/logo.png');
 
         let text = "activado";
         if (!user.active) text = 'desactivado'; 
     
         let message = {
-            from: process.env.JMD_MAILER_USER,
+            from: process.env.APP_MAILER_USER,
             to: user.email,
-            subject: `[YToledo - Club de Senderismo] Usuario ${text}`,
+            subject: `[App Base] Usuario ${text}`,
             html: `
             <div>
-                <div>Se ha ${text} tu usuario en la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+                <div>Se ha ${text} tu usuario en la aplicación de <a href="${config.url}">"App Base"</a>. </div>
                 <br>                        
             </div>
             ${signatureHTML}
             `,
             attachments: [{
-                filename: 'logo_YToledo.png',
+                filename: 'logo.png',
                 path: dirLogo,
                 cid: 'logo'
-            },
-            {
-                filename: 'logo_green.jpg',
-                path: dirLogoGreen,
-                cid: 'green'
             }]
         }
     
@@ -230,29 +206,23 @@ export default class EmailService {
      public async sendEmailUserEditPassword(user: any) {
         const mailSMTP = new mailSMTPClass();        
     
-        const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-        const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+        const dirLogo = path.resolve('./files/images/logo.png');
     
         let message = {
-            from: process.env.JMD_MAILER_USER,
+            from: process.env.APP_MAILER_USER,
             to: user.email,
-            subject: '[YToledo - Club de Senderismo] Edición de contraseña',
+            subject: '[App Base] Edición de contraseña',
             html: `
             <div>
-                <div>Se ha editado desde tu cuenta la contraseña vinculada a tu email en la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+                <div>Se ha editado desde tu cuenta la contraseña vinculada a tu email en la aplicación de <a href="${config.url}">"App Base"</a>. </div>
                 <br>                        
             </div>
             ${signatureHTML}
             `,
             attachments: [{
-                filename: 'logo_YToledo.png',
+                filename: 'logo.png',
                 path: dirLogo,
                 cid: 'logo'
-            },
-            {
-                filename: 'logo_green.jpg',
-                path: dirLogoGreen,
-                cid: 'green'
             }]
         }
     
@@ -266,8 +236,7 @@ export default class EmailService {
     const mailSMTP = new mailSMTPClass();        
 
     const route = config.url;
-    const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-    const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+    const dirLogo = path.resolve('./files/images/logo.png');
 
     let plus = `<div>Puedes usar este enlace para generar tu contraseña: </div>`;
     if (!user.active) {
@@ -275,12 +244,12 @@ export default class EmailService {
     }
 
     let message = {
-        from: process.env.JMD_MAILER_USER,
+        from: process.env.APP_MAILER_USER,
         to: user.email,
-        subject: '[YToledo - Club de Senderismo] Restauración de contraseña',
+        subject: '[App Base] Restauración de contraseña',
         html: `
         <div>
-        <div>Un usuario con permisos ha restaurado la contraseña vinculada a tu email en la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+        <div>Un usuario con permisos ha restaurado la contraseña vinculada a tu email en la aplicación de <a href="${config.url}">"App Base"</a>. </div>
         <div>La contraseña generada es aleatoria.</div>
         <br>                        
         </div>
@@ -292,14 +261,9 @@ export default class EmailService {
         ${signatureHTML}
         `,
         attachments: [{
-            filename: 'logo_YToledo.png',
+            filename: 'logo.png',
             path: dirLogo,
             cid: 'logo'
-        },
-        {
-            filename: 'logo_green.jpg',
-            path: dirLogoGreen,
-            cid: 'green'
         }]
     }
 
@@ -312,29 +276,23 @@ export default class EmailService {
      public async sendEmailUserDelete(user: any) {
         const mailSMTP = new mailSMTPClass();        
 
-        const dirLogo = path.resolve('./files/images/logo_YToledo.png');
-        const dirLogoGreen = path.resolve('./files/images/logo_green.jpg');
+        const dirLogo = path.resolve('./files/images/logo.png');
 
         let message = {
-            from: process.env.JMD_MAILER_USER,
+            from: process.env.APP_MAILER_USER,
             to: user.email,
-            subject: '[YToledo - Club de Senderismo] Eliminación de usuario',
+            subject: '[App Base] Eliminación de usuario',
             html: `
             <div>
-                <div>Se ha eliminado la cuenta de usuario vinculada a tu email en la aplicación de <a href="${config.url}">"Club YToledo de Senderismo"</a>. </div>
+                <div>Se ha eliminado la cuenta de usuario vinculada a tu email en la aplicación de <a href="${config.url}">"App Base"</a>. </div>
                 <br>                        
             </div>
             ${signatureHTML}
             `,
             attachments: [{
-                filename: 'logo_YToledo.png',
+                filename: 'logo.png',
                 path: dirLogo,
                 cid: 'logo'
-            },
-            {
-                filename: 'logo_green.jpg',
-                path: dirLogoGreen,
-                cid: 'green'
             }]
         }
 
