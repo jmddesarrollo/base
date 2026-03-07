@@ -1,0 +1,126 @@
+<div class="w3-container w3-padding-64">
+  <div class="w3-content">
+    
+    <!-- Header -->
+    <div class="w3-center w3-padding-32">
+      <h1 class="w3-xxxlarge w3-text-teal"><b>Plantilla Base de Proyecto</b></h1>
+      <h3 class="w3-large w3-text-grey">Sistema de Autenticación y Gestión de Usuarios</h3>
+    </div>
+
+    <!-- Mensaje de bienvenida para usuarios autenticados -->
+    <div *ngIf="isLoggedIn" class="w3-panel w3-pale-green w3-leftbar w3-border-green">
+      <h3>¡Bienvenido, {{userName}}!</h3>
+      <p>Has iniciado sesión correctamente en la aplicación base.</p>
+    </div>
+
+    <!-- Descripción del proyecto -->
+    <div class="w3-panel w3-pale-blue w3-leftbar w3-border-blue">
+      <h3><i class="fa fa-info-circle"></i> Acerca de esta plantilla</h3>
+      <p>
+        Esta es una plantilla base de proyecto que incluye las funcionalidades esenciales 
+        para comenzar a desarrollar aplicaciones web con Angular y Node.js.
+      </p>
+    </div>
+
+    <!-- Características incluidas -->
+    <div class="w3-row-padding w3-margin-top">
+      <div class="w3-col l6 m6 s12">
+        <div class="w3-card w3-white w3-padding-16">
+          <h4><i class="fa fa-check-circle w3-text-green"></i> Características Incluidas</h4>
+          <ul class="w3-ul">
+            <li><i class="fa fa-lock"></i> Sistema de autenticación con JWT</li>
+            <li><i class="fa fa-users"></i> Gestión de usuarios y roles</li>
+            <li><i class="fa fa-shield"></i> Sistema de permisos granular</li>
+            <li><i class="fa fa-plug"></i> Comunicación en tiempo real con WebSocket</li>
+            <li><i class="fa fa-envelope"></i> Sistema de envío de emails</li>
+            <li><i class="fa fa-key"></i> Recuperación de contraseña</li>
+            <li><i class="fa fa-database"></i> Base de datos MySQL con Sequelize</li>
+            <li><i class="fa fa-docker"></i> Configuración Docker lista para usar</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="w3-col l6 m6 s12">
+        <div class="w3-card w3-white w3-padding-16">
+          <h4><i class="fa fa-rocket w3-text-blue"></i> Próximos Pasos</h4>
+          <ul class="w3-ul">
+            <li><i class="fa fa-pencil"></i> Personaliza el nombre del proyecto</li>
+            <li><i class="fa fa-palette"></i> Adapta los estilos a tu marca</li>
+            <li><i class="fa fa-plus-circle"></i> Agrega tus propios módulos</li>
+            <li><i class="fa fa-cog"></i> Configura las variables de entorno</li>
+            <li><i class="fa fa-book"></i> Revisa la documentación en /2_Docs</li>
+            <li><i class="fa fa-code"></i> Explora los ejemplos en /4_Database/examples</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="w3-panel w3-margin-top">
+      <h3><i class="fa fa-bolt"></i> Acciones Rápidas</h3>
+      
+      <div *ngIf="!isLoggedIn" class="w3-padding-16">
+        <button class="w3-button w3-teal w3-large w3-round" (click)="goToLogin()">
+          <i class="fa fa-sign-in"></i> Iniciar Sesión
+        </button>
+        <p class="w3-text-grey w3-margin-top">
+          <small>Usuario por defecto: <b>admin</b> / Contraseña: <b>123qwe</b></small>
+        </p>
+      </div>
+
+      <div *ngIf="isLoggedIn" class="w3-padding-16">
+        <button class="w3-button w3-teal w3-margin-right w3-margin-bottom" (click)="goToProfile()">
+          <i class="fa fa-user"></i> Mi Perfil
+        </button>
+        <button class="w3-button w3-blue w3-margin-right w3-margin-bottom" (click)="goToUsers()">
+          <i class="fa fa-users"></i> Gestión de Usuarios
+        </button>
+        <button class="w3-button w3-indigo w3-margin-bottom" (click)="goToPermissions()">
+          <i class="fa fa-shield"></i> Gestión de Permisos
+        </button>
+      </div>
+    </div>
+
+    <!-- Información técnica -->
+    <div class="w3-panel w3-pale-yellow w3-leftbar w3-border-yellow w3-margin-top">
+      <h4><i class="fa fa-wrench"></i> Stack Tecnológico</h4>
+      <div class="w3-row-padding">
+        <div class="w3-col l4 m4 s12">
+          <h5>Frontend</h5>
+          <ul>
+            <li>Angular 17</li>
+            <li>TypeScript</li>
+            <li>Socket.IO Client</li>
+            <li>W3.CSS</li>
+          </ul>
+        </div>
+        <div class="w3-col l4 m4 s12">
+          <h5>Backend</h5>
+          <ul>
+            <li>Node.js</li>
+            <li>Express</li>
+            <li>Socket.IO</li>
+            <li>Sequelize ORM</li>
+          </ul>
+        </div>
+        <div class="w3-col l4 m4 s12">
+          <h5>Base de Datos</h5>
+          <ul>
+            <li>MySQL 8.0</li>
+            <li>Docker</li>
+            <li>Nginx</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer con enlaces útiles -->
+    <div class="w3-center w3-padding-32 w3-margin-top">
+      <p class="w3-text-grey">
+        <i class="fa fa-github"></i> 
+        Para más información, consulta el archivo <b>README.md</b> y la documentación en <b>/1_Project/2_Docs</b>
+      </p>
+    </div>
+
+  </div>
+</div>

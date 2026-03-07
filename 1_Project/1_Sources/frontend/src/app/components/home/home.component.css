@@ -1,0 +1,49 @@
+/* Estilos para el componente Home */
+
+.w3-content {
+  max-width: 1200px;
+}
+
+.w3-panel {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.w3-card {
+  min-height: 400px;
+}
+
+.w3-ul li {
+  padding: 8px 0;
+  border-bottom: none;
+}
+
+.w3-ul li i {
+  margin-right: 8px;
+  width: 20px;
+}
+
+h4 i, h3 i {
+  margin-right: 8px;
+}
+
+button {
+  transition: all 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 600px) {
+  .w3-xxxlarge {
+    font-size: 36px !important;
+  }
+  
+  .w3-card {
+    min-height: auto;
+    margin-bottom: 16px;
+  }
+}

@@ -1,0 +1,111 @@
+# Frontend .gitignore
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# ============================================
+# Compiled Output
+# ============================================
+/dist
+/tmp
+/out-tsc
+/build
+# Only exists if Bazel was run
+/bazel-out
+
+# ============================================
+# Dependencies
+# ============================================
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ============================================
+# Angular Cache
+# ============================================
+/.angular/cache
+.angular/
+
+# ============================================
+# Profiling Files
+# ============================================
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# ============================================
+# IDEs and Editors
+# ============================================
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# ============================================
+# Misc
+# ============================================
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# ============================================
+# Environment Files
+# ============================================
+# Variables de entorno locales
+.env
+.env.local
+.env.*.local
+
+# Mantener archivos de configuración de entorno
+!src/environments/
+
+# ============================================
+# Testing
+# ============================================
+/coverage
+*.lcov
+.nyc_output/
+
+# E2E
+/e2e/*.js
+/e2e/*.map
+
+# ============================================
+# System Files
+# ============================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ============================================
+# Logs
+# ============================================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ============================================
+# Temporary Files
+# ============================================
+*.tmp
+*.temp
+*.bak

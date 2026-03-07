@@ -1,0 +1,174 @@
+# Gitignore para App Base Template
+# Este archivo ignora archivos comunes que no deben estar en el repositorio
+
+# ============================================
+# Archivos de Entorno y Configuración
+# ============================================
+# Variables de entorno (mantener solo .env.template)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Excepciones: permitir archivos template
+!.env.template
+!.env.example
+
+# ============================================
+# Dependencias
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ============================================
+# Archivos Compilados
+# ============================================
+dist/
+build/
+*.js.map
+*.d.ts.map
+
+# TypeScript
+*.tsbuildinfo
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# ============================================
+# IDEs y Editores
+# ============================================
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ============================================
+# Sistema Operativo
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# Archivos Temporales
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~.nib
+.cache/
+tmp/
+temp/
+
+# ============================================
+# Base de Datos
+# ============================================
+# Archivos de base de datos locales
+*.sqlite
+*.sqlite3
+*.db
+
+# Dumps de base de datos (excepto schema.sql)
+*.sql.gz
+*-dump.sql
+backup-*.sql
+
+# ============================================
+# Docker
+# ============================================
+# No ignorar docker-compose.yml ni Dockerfiles
+# pero sí archivos de override locales
+docker-compose.override.yml
+.dockerignore
+
+# ============================================
+# Certificados y Claves
+# ============================================
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+ssl/
+certs/
+
+# ============================================
+# Archivos de Usuario
+# ============================================
+# Archivos subidos por usuarios (si aplica)
+uploads/
+user-files/
+
+# ============================================
+# Testing
+# ============================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ============================================
+# Kiro (IDE)
+# ============================================
+.kiro/cache/
+.kiro/temp/
+
+# ============================================
+# Otros
+# ============================================
+# Archivos de respaldo
+*.backup
+*.old
+
+# Archivos de documentación generados
+docs/generated/
