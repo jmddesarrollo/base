@@ -6,14 +6,14 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
 
 ## Tareas
 
-- [ ] 1. Crear utilidades base de seguridad
-  - [ ] 1.1 Implementar `utils/inputSanitizer.ts`
+- [x] 1. Crear utilidades base de seguridad
+  - [x] 1.1 Implementar `utils/inputSanitizer.ts`
     - Crear clase `InputSanitizer` con métodos: `sanitizeString(value, maxLength?)`, `validatePositiveInt(value, fieldName)`, `requireField(value, fieldName)`, `sanitizeObject(obj, schema)`
     - `sanitizeString` debe escapar `<`, `>`, `"`, `'`, `&` y truncar si supera `maxLength`
     - `requireField` y `validatePositiveInt` deben lanzar `ControlException` con código 400
     - _Requisitos: 9.1, 9.2, 9.3, 9.4_
 
-  - [ ] 1.2 Escribir tests de propiedad para InputSanitizer
+  - [x] 1.2 Escribir tests de propiedad para InputSanitizer
     - **Propiedad 13: El InputSanitizer escapa todos los caracteres HTML peligrosos**
     - **Valida: Requisitos 9.1**
     - **Propiedad 14: El InputSanitizer hace cumplir los límites de longitud y tipos**
@@ -21,14 +21,14 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Instalar `fast-check` y `jest` + `ts-jest` si no están presentes
     - Mínimo 100 iteraciones por propiedad
 
-  - [ ] 1.3 Implementar `utils/securityLogger.ts`
+  - [x] 1.3 Implementar `utils/securityLogger.ts`
     - Crear enum `SecurityEventType` con todos los tipos de evento definidos en el diseño
     - Crear interfaz `SecurityLogEntry` con campos: `timestamp`, `event`, `username?`, `ip?`, `result`, `details?`
     - Implementar método `log(entry)` que escribe en `data/logs/security.log` en formato JSON por línea
     - Reutilizar el `Logger` existente para la escritura de archivos
     - _Requisitos: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8_
 
-  - [ ] 1.4 Escribir tests de propiedad para SecurityLogger
+  - [x] 1.4 Escribir tests de propiedad para SecurityLogger
     - **Propiedad 12: Cada entrada del SecurityLogger contiene todos los campos requeridos**
     - **Valida: Requisitos 8.1, 8.8**
     - Verificar que timestamp es ISO 8601 válido, event es SecurityEventType válido, result es SUCCESS o FAILURE
@@ -212,7 +212,8 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
 
 ## Notas
 
-- Las tareas marcadas con `*` son opcionales y pueden omitirse para un MVP más rápido
+- Los tests de backend van en `backend/tests/unit/` y `backend/tests/property/`
+- Los tests de frontend van junto a sus archivos como `.spec.ts` (convención Angular)
 - Cada tarea de propiedad referencia explícitamente la propiedad del documento de diseño
 - Los checkpoints garantizan validación incremental antes de continuar
 - La migración SQL (tarea 6.3) debe ejecutarse manualmente en la base de datos antes de arrancar el servidor con los cambios del modelo
