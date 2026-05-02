@@ -59,7 +59,7 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Generar listas de orígenes y orígenes de prueba, verificar aceptación/rechazo
 
 - [ ] 3. Implementar Rate Limiting en WebSocket
-  - [ ] 3.1 Crear `server/rateLimiter.ts`
+  - [x] 3.1 Crear `server/rateLimiter.ts`
     - Implementar `RateLimiter` con `Map<socketId, { count, windowStart }>` en memoria
     - Método `checkLimit(socketId, eventName)`: retorna `true` si dentro del límite, `false` si lo supera
     - Límite general configurable via `APP_RATE_LIMIT_MAX_EVENTS` y `APP_RATE_LIMIT_WINDOW_MS`
@@ -68,13 +68,13 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Añadir las 4 variables de entorno a `.env.template`
     - _Requisitos: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ] 3.2 Escribir tests de propiedad para RateLimiter
+  - [x] 3.2 Escribir tests de propiedad para RateLimiter
     - **Propiedad 2: El contador de rate limiting refleja fielmente los eventos recibidos**
     - **Valida: Requisitos 2.1, 2.2**
     - **Propiedad 3: El límite de login es siempre más restrictivo que el límite general**
     - **Valida: Requisito 2.3**
 
-  - [ ] 3.3 Registrar RateLimiter como middleware en `server/server.ts`
+  - [x] 3.3 Registrar RateLimiter como middleware en `server/server.ts`
     - Añadir `this.io.use(rateLimiter.middleware)` en el método `listenSockets()`
     - Solo activar en producción o si `APP_RATE_LIMIT_ENABLED=true`
     - _Requisitos: 2.4_

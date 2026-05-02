@@ -4,6 +4,7 @@ import cors from 'cors';
 
 // Router
 import { AuthRoutes } from '../routes/ws/auth.route';
+import RateLimiter from './rateLimiter';
 import { EmailRoutes } from '../routes/ws/email.route';
 import { PermissionRoutes } from '../routes/ws/permission.route';
 import { RoleRoutes } from '../routes/ws/role.route';
@@ -154,6 +155,17 @@ export default class Server {
         console.log('VERSION NODE: ' + process.version);
         console.log('*********');
         console.log('Escuchando conexiones');
+
+        // Activar rate limiting en producción o si APP_RATE_LIMIT_ENABLED=true
+        const rateLimitEnabled =
+            process.env.APP_NODE_ENV === 'production' ||
+            process.env.APP_RATE_LIMIT_ENABLED === 'true';
+
+        if (rateLimitEnabled) {
+            const rateLimiter = new RateLimiter();
+            this.io.use(rateLimiter.middleware.bind(rateLimiter));
+            console.log('[RateLimiter] Middleware activado');
+        }
 
         this.io.on('connect', (socket: any) => {
             console.log('Cliente conectado v2: ' + socket.id);
