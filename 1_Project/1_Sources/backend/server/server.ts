@@ -12,6 +12,74 @@ import { UserRoutes } from '../routes/ws/user.route';
 const path = require('path');
 
 /**
+ * Valida la fortaleza de APP_SEED según el entorno.
+ * Exportada para ser testeable de forma aislada.
+ *
+ * En producción: lanza Error si no cumple los requisitos.
+ * En desarrollo: emite console.warn si no cumple, sin detener el arranque.
+ *
+ * Requisitos en producción:
+ *  - Definida y no vacía
+ *  - Longitud >= 32 caracteres
+ *  - Contiene letras, números y caracteres especiales
+ */
+export function validateAppSeed(seed: string | undefined, env: string): void {
+    if (!seed) {
+        const msg = 'APP_SEED no está configurada. Define APP_SEED en el archivo .env';
+        if (env === 'production') throw new Error(msg);
+        console.warn(`[SECURITY WARNING] ${msg}`);
+        return;
+    }
+
+    const issues: string[] = [];
+
+    if (seed.length < 32) {
+        issues.push('debe tener al menos 32 caracteres');
+    }
+    if (!/[a-zA-Z]/.test(seed)) {
+        issues.push('debe contener al menos una letra');
+    }
+    if (!/[0-9]/.test(seed)) {
+        issues.push('debe contener al menos un número');
+    }
+    if (!/[^a-zA-Z0-9]/.test(seed)) {
+        issues.push('debe contener al menos un carácter especial');
+    }
+
+    if (issues.length > 0) {
+        const msg = `APP_SEED insegura: ${issues.join(', ')}`;
+        if (env === 'production') throw new Error(msg);
+        console.warn(`[SECURITY WARNING] ${msg}`);
+    }
+}
+
+/**
+ * Parsea y valida la lista de orígenes CORS desde APP_CORS_ORIGINS.
+ * Exportada para ser testeable de forma aislada.
+ *
+ * - En producción sin APP_CORS_ORIGINS: lanza Error y detiene el arranque.
+ * - En desarrollo sin APP_CORS_ORIGINS: usa ['http://localhost:4200'] por defecto.
+ * - Acepta lista separada por comas: "http://localhost:4200,https://miapp.com"
+ */
+export function parseCorsOrigins(originsEnv: string | undefined, env: string): string[] {
+    if (!originsEnv || originsEnv.trim() === '') {
+        if (env === 'production') {
+            throw new Error(
+                'APP_CORS_ORIGINS no está configurada en producción. ' +
+                'Define los orígenes permitidos en el archivo .env (ej: APP_CORS_ORIGINS="https://miapp.com")'
+            );
+        }
+        console.warn('[SECURITY WARNING] APP_CORS_ORIGINS no definida. Usando http://localhost:4200 por defecto.');
+        return ['http://localhost:4200'];
+    }
+
+    return originsEnv
+        .split(',')
+        .map(o => o.trim())
+        .filter(o => o.length > 0);
+}
+
+/**
  * Clase del Servidor. 
  * Default: Exportación única
  */
@@ -36,9 +104,15 @@ export default class Server {
         this.port = Number(process.env.APP_SERVER_PORT);
         this.url = process.env.APP_SERVER_URL || '0.0.0.0';
 
+        // Validar APP_SEED antes de inicializar Socket.IO
+        validateAppSeed(process.env.APP_SEED, process.env.APP_NODE_ENV || 'development');
+
+        // Parsear orígenes CORS permitidos
+        const corsOrigins = parseCorsOrigins(process.env.APP_CORS_ORIGINS, process.env.APP_NODE_ENV || 'development');
+
         // Configurar CORS para permitir conexiones desde el frontend
         this.app.use(cors({
-            origin: '*',
+            origin: corsOrigins,
             credentials: true
         }));
 
@@ -48,7 +122,7 @@ export default class Server {
         this.io = require("socket.io")(this.httpServer, { 
             path: "/" + process.env.APP_SERVICE_NAME,
             cors: {
-                origin: '*',
+                origin: corsOrigins,
                 credentials: true
             }
         });

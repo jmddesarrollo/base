@@ -33,19 +33,19 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - **Valida: Requisitos 8.1, 8.8**
     - Verificar que timestamp es ISO 8601 válido, event es SecurityEventType válido, result es SUCCESS o FAILURE
 
-- [ ] 2. Configuración y arranque seguro del servidor
-  - [ ] 2.1 Añadir validación de `APP_SEED` en `server/server.ts`
+- [x] 2. Configuración y arranque seguro del servidor
+  - [x] 2.1 Añadir validación de `APP_SEED` en `server/server.ts`
     - Crear método privado `validateConfiguration()` llamado en el constructor antes de inicializar Socket.IO
     - En producción: verificar longitud >= 32 y presencia de letras + números + caracteres especiales
     - En desarrollo: emitir `console.warn` si no cumple requisitos sin detener el arranque
     - _Requisitos: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [ ] 2.2 Escribir tests de propiedad para validación de APP_SEED
+  - [x] 2.2 Escribir tests de propiedad para validación de APP_SEED
     - **Propiedad 10: La validación de APP_SEED rechaza cualquier secreto débil en producción**
     - **Valida: Requisitos 6.1, 6.2, 6.3**
     - Generar strings aleatorios y verificar que la función acepta/rechaza correctamente
 
-  - [ ] 2.3 Implementar restricción de CORS en `server/server.ts`
+  - [x] 2.3 Implementar restricción de CORS en `server/server.ts`
     - Leer `APP_CORS_ORIGINS` del entorno y parsear como lista separada por comas
     - Reemplazar `origin: '*'` en la configuración de Express CORS y Socket.IO CORS
     - En desarrollo sin `APP_CORS_ORIGINS`: usar `['http://localhost:4200']` por defecto
@@ -53,7 +53,7 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Añadir `APP_CORS_ORIGINS` a `.env.template` con valor de ejemplo
     - _Requisitos: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 2.4 Escribir tests de propiedad para validación de CORS
+  - [x] 2.4 Escribir tests de propiedad para validación de CORS
     - **Propiedad 1: Validación de CORS es exhaustiva y correcta**
     - **Valida: Requisitos 1.1, 1.2**
     - Generar listas de orígenes y orígenes de prueba, verificar aceptación/rechazo
