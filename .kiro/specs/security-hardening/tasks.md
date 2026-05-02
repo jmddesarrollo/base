@@ -79,28 +79,28 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Solo activar en producción o si `APP_RATE_LIMIT_ENABLED=true`
     - _Requisitos: 2.4_
 
-- [ ] 4. Checkpoint — Verificar que el servidor arranca correctamente
+- [x] 4. Checkpoint — Verificar que el servidor arranca correctamente
   - Asegurarse de que todos los tests pasan, el servidor arranca sin errores con la nueva configuración y los logs de seguridad se escriben correctamente. Consultar al usuario si surgen dudas.
 
-- [ ] 5. Hardening de autenticación y JWT
-  - [ ] 5.1 Reducir payload JWT en `services/user/auth.bll.ts`
+- [x] 5. Hardening de autenticación y JWT
+  - [x] 5.1 Reducir payload JWT en `services/user/auth.bll.ts`
     - Modificar el método `login()` para generar el token con payload mínimo: `{ id, username, role_id }`
     - Modificar el método `renewToken()` para usar el mismo payload mínimo
     - Modificar el método `recoveryToken()` para usar payload mínimo
     - _Requisitos: 3.1, 3.2_
 
-  - [ ] 5.2 Escribir tests de propiedad para payload JWT mínimo
+  - [x] 5.2 Escribir tests de propiedad para payload JWT mínimo
     - **Propiedad 4: El payload JWT contiene exactamente los campos mínimos requeridos**
     - **Valida: Requisitos 3.1, 3.2**
     - Generar usuarios aleatorios y verificar que el token generado no contiene campos sensibles
 
-  - [ ] 5.3 Añadir logging de seguridad en `auth.bll.ts` y `authorized.middleware.ts`
+  - [x] 5.3 Añadir logging de seguridad en `auth.bll.ts` y `authorized.middleware.ts`
     - En `auth.bll.ts`: llamar a `SecurityLogger` en login fallido (contraseña incorrecta), bloqueo de cuenta, login exitoso
     - En `authorized.middleware.ts`: llamar a `SecurityLogger` en token inválido, token expirado, acceso denegado
     - Extraer la IP del socket desde `socket.handshake.address`
     - _Requisitos: 8.1, 8.2, 8.3, 8.4_
 
-  - [ ] 5.4 Actualizar `authorized.middleware.ts` para consultar BD en verificación de token
+  - [x] 5.4 Actualizar `authorized.middleware.ts` para consultar BD en verificación de token
     - En `checkToken()` y `isAllowed()`: después de verificar el JWT, consultar `UsersDAL.getUser(decoded.user.id)` para obtener datos actualizados
     - Verificar que el usuario sigue activo en BD antes de proceder
     - _Requisitos: 3.3_

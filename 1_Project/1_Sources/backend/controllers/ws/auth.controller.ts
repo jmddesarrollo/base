@@ -65,7 +65,7 @@ export class AuthController {
      */
     public async getMyProfile(req: any, socket: Socket) {
         try {
-            const decoded = this.AuthorizedMiddleware.checkToken(req.token, socket);
+            const decoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
             const user = await this.userService.getUser(decoded.user.id);
             user.password = undefined;
 
@@ -86,7 +86,7 @@ export class AuthController {
      */
     public async renewToken(req: any, socket: Socket) {
         try {
-            const decoded = this.AuthorizedMiddleware.checkToken(req.token, socket);
+            const decoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
 
             req.user = decoded.user;
             const data = await this.authService.renewToken(req);
@@ -161,7 +161,7 @@ export class AuthController {
 
     public async validateTokenRecovery(req: any, socket: Socket) {
         try {
-            const decoded = this.AuthorizedMiddleware.checkToken(req.tokenRecovery, socket, true);
+            const decoded = await this.AuthorizedMiddleware.checkToken(req.tokenRecovery, socket, true);
 
             if (!decoded.user) { throw new ControlException('No ha sido encontrado el usuario', 500); }
 
