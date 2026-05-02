@@ -105,19 +105,19 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Verificar que el usuario sigue activo en BD antes de proceder
     - _Requisitos: 3.3_
 
-- [ ] 6. Migración de base de datos y modelo de usuario
-  - [ ] 6.1 Actualizar `models/user.model.ts`
+- [x] 6. Migración de base de datos y modelo de usuario
+  - [x] 6.1 Actualizar `models/user.model.ts`
     - Cambiar `attempts` de `DataTypes.INTEGER(1)` a `DataTypes.INTEGER(11)`
     - Añadir campo `recovery_token_hash: DataTypes.STRING(64), allowNull: true`
     - Añadir campo `recovery_token_created_at: DataTypes.DATE, allowNull: true`
     - _Requisitos: 10.1, 5.2_
 
-  - [ ] 6.2 Escribir test de ejemplo para el campo attempts
+  - [x] 6.2 Escribir test de ejemplo para el campo attempts
     - Verificar que el modelo acepta valores > 9 sin error de validación
     - **Propiedad 15: El campo attempts nunca toma valores negativos**
     - **Valida: Requisito 10.2**
 
-  - [ ] 6.3 Crear script de migración SQL
+  - [x] 6.3 Crear script de migración SQL
     - Crear archivo `1_Project/4_Database/migrations/001_security_hardening.sql` con los ALTER TABLE del diseño
     - Incluir comentarios explicativos y verificación de que las columnas no existen antes de añadirlas
     - _Requisitos: 10.1, 5.2_
