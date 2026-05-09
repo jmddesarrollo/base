@@ -10,10 +10,10 @@ Comunicación:     Socket.io en tiempo real
 
 DOCKER
 Iniciar contenedor
-docker run --name y-mysql-container -e MYSQL_ROOT_PASSWORD=y-toledo-pwd -p 3306:3306 -d mysql:latest
+docker run --name app-base-mysql-container -e MYSQL_ROOT_PASSWORD=app-base-pwd -p 3306:3306 -d mysql:latest
 
 Acceder al contenedor
-docker exec -it y-mysql-container bash
+docker exec -it app-base-mysql-container bash
 
 mysql -u root -p
 SET GLOBAL require_secure_transport=OFF;

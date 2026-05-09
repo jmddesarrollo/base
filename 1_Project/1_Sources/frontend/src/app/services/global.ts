@@ -1,5 +1,5 @@
 export const GLOBAL = {
-    project: 'Y-Toledo',
+    project: 'app-base',
     version: '1.0.0',
     secure: true,
     adminRoleId: 1,    

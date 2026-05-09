@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import ControlException from '../../utils/controlException';
 
 import RoleService from '../../services/role';
-import { UserService } from '../../services/user';
+import { AuthService, UserService } from '../../services/user';
 
 import AuthorizedMiddleware from '../../server/middlewares/authorized.middleware';
 
@@ -13,6 +13,7 @@ const config = require('../../config/config')[env];
 const sequelize = require('../../models').sequelize;
 
 export class UsersController {
+    private authService = new AuthService();
     private roleService = new RoleService();
     private userService = new UserService();
     private AuthorizedMiddleware = new AuthorizedMiddleware();
@@ -154,6 +155,7 @@ export class UsersController {
      */        
     public async editPasswordUser(req: any, socket: Socket) {
         const user = req.user;
+        const recovery = req.recovery === true;
 
         // Iniciar transacción
         let t = await sequelize.transaction(); 
@@ -163,7 +165,11 @@ export class UsersController {
 
             const tokenDecoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
 
-            if (tokenDecoded.user.id !== user.id) {
+            if (recovery) {
+                if (tokenDecoded.user.id !== user.id) { throw new ControlException('El token de recuperación no corresponde al usuario', 401); }
+
+                await this.authService.validateRecoveryToken(user.id, req.token);
+            } else if (tokenDecoded.user.id !== user.id) {
                 await this.AuthorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
 
                 // Si el usuario conectado es distinto del usuario a editar, la contraseña generada será aleatoria
@@ -173,6 +179,10 @@ export class UsersController {
             await this.userService.validateEditPasswordUserDefault(user, tokenDecoded);
 
             const data = await this.userService.editPasswordUser(user, t);
+
+            if (recovery) {
+                await this.authService.consumeRecoveryToken(user.id, user.username);
+            }
     
             t.commit();            
     

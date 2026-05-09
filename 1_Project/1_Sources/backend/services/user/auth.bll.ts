@@ -5,6 +5,7 @@ import SecurityLogger, { SecurityEventType } from '../../utils/securityLogger';
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 import momentTZ from 'moment-timezone';
 import moment from 'moment';
@@ -131,12 +132,71 @@ export default class AuthService {
     // =====================================
     // Token para recuperar contraseña
     // =====================================
-    public recoveryToken(req: any) {
+    public async recoveryToken(req: any): Promise<string> {
         // Requisito 3.1, 3.2: payload JWT mínimo también en token de recuperación
         const payload = this.buildMinimalPayload(req.user);
-        var token = jwt.sign({ user: payload }, process.env.APP_SEED, { expiresIn: process.env.APP_EXPIRATION_TOKEN_RECOVERY });
-    
+        const token = jwt.sign({ user: payload }, process.env.APP_SEED, { expiresIn: process.env.APP_EXPIRATION_TOKEN_RECOVERY });
+
+        // Requisitos 5.1, 5.2, 5.5: guardar hash SHA-256 del token en BD (invalida el anterior automáticamente)
+        const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+        const createdAt = new Date();
+        await this.usersDAL.saveRecoveryToken(req.user.id, tokenHash, createdAt);
+
+        // Requisito 8.6: registrar solicitud de recuperación
+        this.securityLogger.log({
+            timestamp: new Date().toISOString(),
+            event: SecurityEventType.PASSWORD_RECOVERY_REQUESTED,
+            username: req.user.username,
+            result: 'SUCCESS',
+        });
+
         return token;
+    }
+
+    // =====================================
+    // Validar token de recuperación contra BD
+    // =====================================
+    /**
+     * Requisitos 5.3, 5.6: verifica que el hash del token coincide con el almacenado en BD
+     * y que no ha expirado según su timestamp de creación.
+     */
+    public async validateRecoveryToken(userId: number, token: string): Promise<void> {
+        const tokenData = await this.usersDAL.getRecoveryTokenData(userId);
+
+        if (!tokenData.hash || !tokenData.createdAt) {
+            throw new ControlException('El enlace de recuperación no es válido', 401);
+        }
+
+        // Comparar SHA-256 del token recibido con el hash almacenado
+        const receivedHash = crypto.createHash('sha256').update(token).digest('hex');
+        if (receivedHash !== tokenData.hash) {
+            throw new ControlException('El enlace de recuperación no es válido', 401);
+        }
+
+        // Requisito 5.6: verificar expiración por timestamp (1 hora)
+        const expirationMs = 60 * 60 * 1000; // 1 hora en ms
+        const elapsed = Date.now() - tokenData.createdAt.getTime();
+        if (elapsed > expirationMs) {
+            throw new ControlException('El enlace de recuperación ya ha expirado', 401);
+        }
+    }
+
+    // =====================================
+    // Consumir (invalidar) token de recuperación tras cambio de contraseña
+    // =====================================
+    /**
+     * Requisito 5.4: elimina el hash del token de BD tras el cambio de contraseña exitoso.
+     */
+    public async consumeRecoveryToken(userId: number, username?: string): Promise<void> {
+        await this.usersDAL.clearRecoveryToken(userId);
+
+        // Requisito 8.5, 8.6: registrar completado de recuperación
+        this.securityLogger.log({
+            timestamp: new Date().toISOString(),
+            event: SecurityEventType.PASSWORD_RECOVERY_COMPLETED,
+            username,
+            result: 'SUCCESS',
+        });
     }
 
 }

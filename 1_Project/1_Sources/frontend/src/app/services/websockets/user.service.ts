@@ -38,7 +38,7 @@ export class UserService {
     }
 
     editPasswordUser(user: UserModel): void {      
-      this.wsService.emit('user/editPasswordUser', { user });
+      this.wsService.emit('user/editPasswordUser', { user, recovery: !this.wsService.sessionOn });
     }
     _editPasswordUser(): Observable<UserModel> {
       return this.wsService.listen('user/editPasswordUser');

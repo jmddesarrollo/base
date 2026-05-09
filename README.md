@@ -251,7 +251,7 @@ Después de instalar la plantilla, puedes:
    - Configurar variables de entorno de producción
    - Usar Docker Compose para despliegue
    - Configurar Nginx como proxy reverso
-   - Ver guía: `1_Project/2_Docs/1_Technical/Prod - Despliegue Y-Toledo Docker.md`
+   - Ver guía: `1_Project/2_Docs/1_Technical/Prod - Despliegue App Base Docker.md`
 
 ## 📚 Documentación Adicional
 
@@ -259,7 +259,7 @@ Después de instalar la plantilla, puedes:
 - [Documentación Técnica](1_Project/2_Docs/1_Technical/)
 - [Arquitectura del Sistema](1_Project/2_Docs/1_Technical/Route%20Pages%20Architecture.md)
 - [Configuración de Nginx](1_Project/2_Docs/1_Technical/Nginx.md)
-- [Despliegue con Docker](1_Project/2_Docs/1_Technical/Prod%20-%20Despliegue%20Y-Toledo%20Docker.md)
+- [Despliegue con Docker](1_Project/2_Docs/1_Technical/Prod%20-%20Despliegue%20App%20Base%20Docker.md)
 
 ## 🤝 Contribuciones
 

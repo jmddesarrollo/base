@@ -615,7 +615,7 @@ Una vez que tengas la aplicación funcionando:
    - Ver: [Guía de Agregar Módulos](adding-modules.md)
 
 3. **Desplegar en producción:**
-   - Ver: [Documentación de Despliegue](../1_Technical/Prod%20-%20Despliegue%20Y-Toledo%20Docker.md)
+   - Ver: [Documentación de Despliegue](../1_Technical/Prod%20-%20Despliegue%20App%20Base%20Docker.md)
 
 4. **Entender la arquitectura:**
    - Ver: [Documentación de Arquitectura](../architecture/overview.md)

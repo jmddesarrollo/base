@@ -1,7 +1,7 @@
 import ControlException from '../../utils/controlException';
 import Logger from '../../utils/logger';
 
-const env = process.env.JMD_NODE_ENV || 'development';
+const env = process.env.APP_NODE_ENV || 'development';
 const config = require('../../config/config')[env];
 
 const nodemailer = require("nodemailer");
@@ -14,17 +14,25 @@ export default class mailSMTPClass {
 
     constructor() { }
 
+    private buildMailError(error: any): ControlException {
+        const message = process.env.APP_NODE_ENV === 'production'
+            ? 'No se ha podido enviar el email. Revisa la configuración SMTP.'
+            : `No se ha podido enviar el email. SMTP: ${error.message}`;
+
+        return new ControlException(message, 500);
+    }
+
     public async sendMailSMTP(message: any) {
         // En entorno de pruebas
-        if (process.env.JMD_NODE_ENV !== 'production') {
+        if (process.env.APP_NODE_ENV !== 'production') {
             message.html = `<div>Correo originalmente dirigido a ${message.to}</div> <br>${message.html}`;
             message.to = config.emailTest;            
         }
         
         this.mailConfig = {
-            host: process.env.JMD_MAILER_HOST,
-            port: process.env.JMD_MAILER_PORT,
-            secure: false,
+            host: process.env.APP_MAILER_HOST,
+            port: Number(process.env.APP_MAILER_PORT),
+            secure: Number(process.env.APP_MAILER_PORT) === 465,
             auth: {
                 user: process.env.APP_MAILER_USER,
                 pass: process.env.APP_MAILER_PASSWORD
@@ -34,23 +42,22 @@ export default class mailSMTPClass {
 
         this.smtpTransport = nodemailer.createTransport(this.mailConfig);
 
-        await this.smtpTransport.sendMail(message, (error: any) => {
-            if (error) {                
-                if (error.response) {
-                    this.logger.writeLog('mail', `Error. To: ${message.to}. Subject: ${message.subject}. Message: ${error.message}`);
-                } else {
-                    const errString = error.toString();
+        try {
+            await this.smtpTransport.sendMail(message);
+            this.logger.writeLog('mail', `Success. To: ${message.to}. Subject: ${message.subject}`);
+        } catch (error: any) {
+            const errString = error.toString();
+            const isTimeout = errString.indexOf('Connection timeout') >= 0;
 
-                    // TimeOut
-                    const idx = errString.indexOf('Connection timeout');
-                    if (idx >= 0) this.logger.writeLog('mail', `Error. To: ${message.to}. Subject: ${message.subject}. Message: Connection timeout` ); 
+            this.logger.writeLog('mail', `Error. To: ${message.to}. Subject: ${message.subject}. Message: ${isTimeout ? 'Connection timeout' : error.message}`);
 
-                    this.retrySendMail(this.mailConfig, message);
-                }
-            } else {
-                this.logger.writeLog('mail', `Success. To: ${message.to}. Subject: ${message.subject}`);
+            if (isTimeout) {
+                await this.retrySendMail(this.mailConfig, message);
+                return;
             }
-        });
+
+            throw this.buildMailError(error);
+        }
     }
 
     /**
@@ -62,21 +69,16 @@ export default class mailSMTPClass {
         this.mailConfig.connectionTimeout = 180000;
         this.smtpTransport = nodemailer.createTransport(mailConfig, message);
 
-        await this.smtpTransport.sendMail(message, (error: any) => {
-            if (error) {
-                if (error.response) {
-                    this.logger.writeLog('mail', `Error Retry. To: ${message.to}. Subject: ${message.subject}. Message: ${error.message}`);                    
-                } else {
-                    const errString = error.toString();
+        try {
+            await this.smtpTransport.sendMail(message);
+            this.logger.writeLog('mail', `Success. To: ${message.to}. Subject: ${message.subject}`);
+        } catch (error: any) {
+            const errString = error.toString();
+            const isTimeout = errString.indexOf('Connection timeout') >= 0;
 
-                    // TimeOut
-                    const idx = errString.indexOf('Connection timeout');
-                    if (idx >= 0) this.logger.writeLog('mail', `Error Retry. To: ${message.to}. Subject: ${message.subject}. Message: Connection timeout` );                    
-                }                               
-            } else {
-                this.logger.writeLog('mail', `Success. To: ${message.to}. Subject: ${message.subject}`);
-            }
-        });
+            this.logger.writeLog('mail', `Error Retry. To: ${message.to}. Subject: ${message.subject}. Message: ${isTimeout ? 'Connection timeout' : error.message}`);
+            throw this.buildMailError(error);
+        }
     }
 
 }

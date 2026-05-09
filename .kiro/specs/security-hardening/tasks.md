@@ -122,21 +122,21 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Incluir comentarios explicativos y verificación de que las columnas no existen antes de añadirlas
     - _Requisitos: 10.1, 5.2_
 
-- [ ] 7. Invalidación de tokens de recuperación de contraseña
-  - [ ] 7.1 Actualizar `services/user/users.dal.ts` para gestionar tokens de recuperación
+- [-] 7. Invalidación de tokens de recuperación de contraseña
+  - [x] 7.1 Actualizar `services/user/users.dal.ts` para gestionar tokens de recuperación
     - Añadir método `saveRecoveryToken(userId, tokenHash, createdAt)`: guarda el hash en BD
     - Añadir método `clearRecoveryToken(userId)`: limpia `recovery_token_hash` y `recovery_token_created_at`
     - Añadir método `getRecoveryTokenData(userId)`: retorna `{ hash, createdAt }` del token activo
     - _Requisitos: 5.2, 5.3, 5.4, 5.5_
 
-  - [ ] 7.2 Actualizar `services/user/auth.bll.ts` para invalidar tokens anteriores
+  - [x] 7.2 Actualizar `services/user/auth.bll.ts` para invalidar tokens anteriores
     - En `recoveryToken()`: generar token, calcular `SHA-256(token)`, llamar a `saveRecoveryToken()` (invalida el anterior automáticamente)
     - Crear nuevo método `validateRecoveryToken(userId, token)`: obtiene hash de BD, compara con `SHA-256(token)`, verifica que no ha expirado
     - Crear nuevo método `consumeRecoveryToken(userId)`: llama a `clearRecoveryToken()` tras cambio de contraseña exitoso
     - Añadir logging de seguridad para solicitud y completado de recuperación
     - _Requisitos: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 8.5, 8.6_
 
-  - [ ] 7.3 Escribir tests de propiedad para invalidación de tokens de recuperación
+  - [x] 7.3 Escribir tests de propiedad para invalidación de tokens de recuperación
     - **Propiedad 7: Los tokens de recuperación son únicos entre solicitudes consecutivas**
     - **Valida: Requisitos 5.1, 5.5**
     - **Propiedad 8: Verificación de token de recuperación es un round-trip de hash**
@@ -144,7 +144,7 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - **Propiedad 9: Un token de recuperación usado no puede usarse de nuevo**
     - **Valida: Requisito 5.4**
 
-  - [ ] 7.4 Actualizar `controllers/ws/auth.controller.ts` para usar los nuevos métodos
+  - [x] 7.4 Actualizar `controllers/ws/auth.controller.ts` para usar los nuevos métodos
     - En `validateTokenRecovery()`: usar `authService.validateRecoveryToken()` en lugar de solo verificar el JWT
     - En el flujo de cambio de contraseña: llamar a `authService.consumeRecoveryToken()` tras el cambio exitoso
     - _Requisitos: 5.3, 5.4_

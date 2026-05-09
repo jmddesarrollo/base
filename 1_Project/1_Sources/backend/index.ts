@@ -1,5 +1,5 @@
 // En el .env se definen variables globales (variables de entorno) que se usan en la app
-import * as dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
 
 import Server from './server/server';

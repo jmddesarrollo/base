@@ -1,4 +1,4 @@
-# DESPLIEGUE DE Y-Toledo a PRODUCCIÓN (Docker)
+# DESPLIEGUE DE app-base a PRODUCCIÓN (Docker)
 Pasos para el despliegue en Servidor con Docker + Nginx
 
 ---
@@ -12,7 +12,7 @@ Pasos para el despliegue en Servidor con Docker + Nginx
 ## Estructura del servidor
 ```
 /home/
-├── ytoledo/                 # Código del backend de proyecto Y-Toledo
+├── app-base/                # Código del backend de proyecto app-base
 ├── efcastillodelaguila/     # Código del backend de proyecto E.F. Casitillo del Águila
 ├── docker-compose.yml       # Orquestación de contenedores
 ├── nginx/
@@ -38,25 +38,25 @@ tsc -w
 ### 3. Preparar archivos para despliegue
 ```bash
 # Crear carpeta temporal
-mkdir /tmp/ytoledo-deploy
-mkdir /tmp/ytoledo-deploy/files
+mkdir /tmp/app-base-deploy
+mkdir /tmp/app-base-deploy/files
 
 # Copiar backend
 cd 1_Project/1_Sources/backend
-cp -r dist/* /tmp/ytoledo-deploy/
-cp package.json package-lock.json .env.production dockerfile /tmp/ytoledo-deploy/
-cp -r files/* /tmp/ytoledo-deploy/files/
+cp -r dist/* /tmp/app-base-deploy/
+cp package.json package-lock.json .env.production dockerfile /tmp/app-base-deploy/
+cp -r files/* /tmp/app-base-deploy/files/
 
 # Copiar frontend compilado a public
-mkdir -p /tmp/ytoledo-deploy/public
+mkdir -p /tmp/app-base-deploy/public
 # Posicionarse en la raíz del proyecto
 cd 1_Project/1_Sources/
-cp -r frontend/dist/* /tmp/ytoledo-deploy/public/
-mv /tmp/ytoledo-deploy/.env.production /tmp/ytoledo-deploy/.env 
+cp -r frontend/dist/* /tmp/app-base-deploy/public/
+mv /tmp/app-base-deploy/.env.production /tmp/app-base-deploy/.env 
 
 # Verificar estructura
-ls -la /tmp/ytoledo-deploy/
-ls -la /tmp/ytoledo-deploy/public/
+ls -la /tmp/app-base-deploy/
+ls -la /tmp/app-base-deploy/public/
 ```
 
 ### 3. Servidor - Carga de archivos
@@ -67,25 +67,25 @@ sftp://usuario@IP_DEL_SERVIDOR
 ```bash
 # Comprimir para transferencia más rápida
 cd /tmp
-tar -czf ytoledo-deploy.tar.gz ytoledo-deploy/
+tar -czf app-base-deploy.tar.gz app-base-deploy/
 
 # Subir al servidor
-scp ytoledo-deploy.tar.gz usuario@servidor:/home/
+scp app-base-deploy.tar.gz usuario@servidor:/home/
 # Eliminar archivos temporales
-rm -rf ytoledo-deploy ytoledo-deploy.tar.gz
+rm -rf app-base-deploy app-base-deploy.tar.gz
 
 # En el servidor, extraer archivos
 ssh usuario@servidor
 cd /home
-tar -xzf ytoledo-deploy.tar.gz
-rm -rf ytoledo/*  # Limpiar versión anterior
-# Crear carpeta ytoledo si no existe
-mkdir -p ytoledo
+tar -xzf app-base-deploy.tar.gz
+rm -rf app-base/*  # Limpiar versión anterior
+# Crear carpeta app-base si no existe
+mkdir -p app-base
 # Mover archivos (normales y ocultos)
-mv ytoledo-deploy/* ytoledo/
-cp ytoledo-deploy/.env ytoledo/.env
+mv app-base-deploy/* app-base/
+cp app-base-deploy/.env app-base/.env
 # Eliminar archivos temporales
-rm -rf ytoledo-deploy ytoledo-deploy.tar.gz
+rm -rf app-base-deploy app-base-deploy.tar.gz
 ```
 
 ### 5. Despliegue con Docker
@@ -100,17 +100,17 @@ docker-compose down
 docker-compose up -d --build
 
 # Verificar que está funcionando
-docker-compose logs ytoledo
+docker-compose logs app-base
 docker ps
 ```
 
 ### 6. Verificación
 ```bash
 # Verificar logs
-docker-compose logs -f ytoledo
+docker-compose logs -f app-base
 
 # Verificar que responde
-curl -k https://ytoledo.es
+curl -k https://app-base.es
 
 # Verificar base de datos
 docker-compose exec mysql mysql -u root -p -e "SHOW DATABASES;"
@@ -124,11 +124,11 @@ docker-compose exec mysql mysql -u root -p -e "SHOW DATABASES;"
 docker-compose ps
 
 # Ver logs de un servicio específico
-docker-compose logs ytoledo
-docker-compose logs -f ytoledo  # Seguir logs en tiempo real
+docker-compose logs app-base
+docker-compose logs -f app-base  # Seguir logs en tiempo real
 
 # Reiniciar un servicio
-docker-compose restart ytoledo
+docker-compose restart app-base
 
 # Parar todos los servicios
 docker-compose down
@@ -137,7 +137,7 @@ docker-compose down
 docker-compose up -d
 
 # Reconstruir imagen sin cache
-docker-compose build --no-cache ytoledo
+docker-compose build --no-cache app-base
 ```
 
 ### Gestión de imágenes y limpieza
@@ -154,19 +154,19 @@ docker system prune -f
 
 ### Acceso a contenedores
 ```bash
-# Acceder al contenedor de ytoledo
-docker-compose exec ytoledo bash
+# Acceder al contenedor de app-base
+docker-compose exec app-base bash
 
 # Acceder a MySQL
 docker-compose exec mysql mysql -u root -p
 
 # Ver archivos dentro del contenedor
-docker-compose exec ytoledo ls -la /home/ytoledo/
+docker-compose exec app-base ls -la /home/app-base/
 ```
 
 ## Estructura de archivos en el contenedor
 ```
-/home/ytoledo/
+/home/app-base/
 ├── dist/           # Código TypeScript compilado
 ├── public/         # Frontend Angular compilado
 ├── files/          # Archivos estáticos (logos, scripts)
@@ -180,22 +180,22 @@ docker-compose exec ytoledo ls -la /home/ytoledo/
 ### Si el contenedor no inicia
 ```bash
 # Ver logs detallados
-docker-compose logs ytoledo
+docker-compose logs app-base
 
 # Verificar configuración
 docker-compose config
 
 # Reconstruir desde cero
-docker-compose down ytoledo
-docker-compose build --no-cache ytoledo
-docker-compose up -d ytoledo
+docker-compose down app-base
+docker-compose build --no-cache app-base
+docker-compose up -d app-base
 ```
 
 ### Si hay problemas de permisos
 ```bash
 # En el servidor, ajustar permisos
-sudo chown -R $USER:$USER /home/ytoledo
-chmod -R 755 /home/ytoledo
+sudo chown -R $USER:$USER /home/app-base
+chmod -R 755 /home/app-base
 ```
 
 ### Si MySQL no conecta
@@ -214,9 +214,9 @@ docker-compose restart mysql
 - El contenedor usa Node.js v22 (actualizado desde v20)
 - TypeScript se compila automáticamente durante el build
 - Los archivos estáticos del frontend se sirven desde `/public/`
-- WebSocket funciona a través del path `/ytoledo/`
+- WebSocket funciona a través del path `/app-base/`
 - SSL/HTTPS está configurado en Nginx
 
 ## Acceso a la aplicación
-- URL: https://ytoledo.es
+- URL: https://app-base.es
 - Usuario administrador: admin

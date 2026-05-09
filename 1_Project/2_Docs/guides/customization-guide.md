@@ -689,7 +689,7 @@ const io = new Server(server, {
 - [Guía de Inicio Rápido](getting-started.md)
 - [Guía de Agregar Módulos](adding-modules.md)
 - [Documentación de Arquitectura](../architecture/overview.md)
-- [Documentación de Despliegue](../1_Technical/Prod%20-%20Despliegue%20Y-Toledo%20Docker.md)
+- [Documentación de Despliegue](../1_Technical/Prod%20-%20Despliegue%20App%20Base%20Docker.md)
 
 ---
 

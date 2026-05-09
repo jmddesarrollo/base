@@ -33,7 +33,7 @@ Internet → Nginx (Puerto 443/80) → Decide dónde enviar la petición
 
 ### **1. Servidor Web (Archivos estáticos)**
 ```
-Usuario solicita: https://ytoledo.es/index.html
+Usuario solicita: https://app-base.es/index.html
                      ↓
 Nginx busca: /usr/share/nginx/html/index.html
                      ↓
@@ -42,11 +42,11 @@ Nginx responde: Archivo HTML al navegador
 
 ### **2. Proxy Reverso (APIs dinámicas)**
 ```
-Usuario solicita: https://ytoledo.es/ytoledo/socket.io/
+Usuario solicita: https://app-base.es/app-base/socket.io/
                      ↓
 Nginx detecta: "Esto es para el backend"
                      ↓
-Nginx reenvía: http://ytoledo:5555/ytoledo/socket.io/
+Nginx reenvía: http://app-base:5555/app-base/socket.io/
                      ↓
 Backend responde: Datos dinámicos
                      ↓
@@ -55,7 +55,7 @@ Nginx reenvía: Respuesta al usuario
 
 ### **3. Terminación SSL/HTTPS**
 ```
-Usuario: https://ytoledo.es (cifrado)
+Usuario: https://app-base.es (cifrado)
                      ↓
 Nginx: Descifra HTTPS → HTTP
                      ↓
@@ -73,18 +73,18 @@ Usuario: Recibe respuesta cifrada
 # Redirección HTTP → HTTPS
 server {
     listen 80;
-    server_name ytoledo.es www.ytoledo.es;
+    server_name app-base.es www.app-base.es;
     return 301 https://$host$request_uri;  # Fuerza HTTPS
 }
 
 # Servidor HTTPS principal
 server {
     listen 443 ssl;
-    server_name ytoledo.es www.ytoledo.es;
+    server_name app-base.es www.app-base.es;
     
     # Certificados SSL
-    ssl_certificate /etc/letsencrypt/live/y-toledo.es/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/y-toledo.es/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/app-base.es/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/app-base.es/privkey.pem;
     
     # Archivos estáticos (Frontend)
     location / {
@@ -93,8 +93,8 @@ server {
     }
     
     # API y WebSocket (Backend)
-    location /ytoledo/ {
-        proxy_pass http://ytoledo_backend;
+    location /app-base/ {
+        proxy_pass http://app_base_backend;
         # Configuración de proxy...
     }
 }
@@ -106,23 +106,23 @@ server {
 ```
 1. ¿Es HTTP? → Redirigir a HTTPS
 2. ¿Es HTTPS? → Continuar
-3. ¿Empieza con /ytoledo/? → Enviar al backend
+3. ¿Empieza con /app-base/? → Enviar al backend
 4. ¿Cualquier otra cosa? → Servir archivo estático
 ```
 
 ### **Ejemplos prácticos:**
 ```
-https://ytoledo.es/
+https://app-base.es/
 → Nginx sirve: /usr/share/nginx/html/index.html
 
-https://ytoledo.es/main.js
+https://app-base.es/main.js
 → Nginx sirve: /usr/share/nginx/html/main.js
 
-https://ytoledo.es/ytoledo/socket.io/
-→ Nginx proxy: http://ytoledo:5555/ytoledo/socket.io/
+https://app-base.es/app-base/socket.io/
+→ Nginx proxy: http://app-base:5555/app-base/socket.io/
 
-https://ytoledo.es/ytoledo/api/users
-→ Nginx proxy: http://ytoledo:5555/ytoledo/api/users
+https://app-base.es/app-base/api/users
+→ Nginx proxy: http://app-base:5555/app-base/api/users
 ```
 
 ## ⚡ **¿Por qué usar Nginx y no solo Node.js?**
@@ -167,7 +167,7 @@ Internet (Puerto 443)
 │ Archivos    │ APIs/       │
 │ estáticos   │ WebSocket   │
 │             │             │
-│ index.html  │ /ytoledo/   │
+│ index.html  │ /app-base/  │
 │ main.js     │ socket.io   │
 │ styles.css  │ api calls   │
 │             │             │
@@ -224,7 +224,7 @@ proxy_set_header Connection "upgrade";
 ### **3. Escalabilidad**
 - **Múltiples backends**: Fácil agregar más contenedores
 - **Balanceador**: Distribuir carga entre servidores
-- **Dominios**: ytoledo.es y efcastillodelaguila.es
+- **Dominios**: app-base.es y dominio-secundario.es
 
 ## 💡 **Analogías para recordar:**
 
@@ -246,9 +246,9 @@ Nginx en tu servidor:
 ├── Puerto 80 → Redirige a HTTPS
 ├── Puerto 443 → Punto de entrada principal
 ├── Archivos estáticos → Los sirve directamente
-├── /ytoledo/* → Proxy al backend Node.js
+├── /app-base/* → Proxy al backend Node.js
 ├── SSL/HTTPS → Gestiona certificados
-└── Múltiples dominios → ytoledo.es + efcastillodelaguila.es
+└── Múltiples dominios → app-base.es + dominio-secundario.es
 ```
 
 ## 🎯 **Resumen final:**
@@ -258,9 +258,9 @@ Nginx en tu servidor:
 ├── Puerto 80 → Redirige a HTTPS
 ├── Puerto 443 → Punto de entrada principal
 ├── Archivos estáticos → Los sirve directamente
-├── /ytoledo/* → Proxy al backend Node.js
+├── /app-base/* → Proxy al backend Node.js
 ├── SSL/HTTPS → Gestiona certificados
-└── Múltiples dominios → ytoledo.es + efcastillodelaguila.es
+└── Múltiples dominios → app-base.es + dominio-secundario.es
 ```
 
 **Nginx = El director de orquesta que coordina todo tu servidor web**
@@ -269,7 +269,7 @@ Nginx en tu servidor:
 
 ### **Ejemplo 1: Cargar la página principal**
 ```
-1. Usuario escribe: https://ytoledo.es
+1. Usuario escribe: https://app-base.es
 2. Nginx recibe petición en puerto 443
 3. Nginx busca: /usr/share/nginx/html/index.html
 4. Nginx sirve: Archivo HTML + CSS + JS
@@ -280,9 +280,9 @@ Nginx en tu servidor:
 ### **Ejemplo 2: Login de usuario**
 ```
 1. Usuario hace login en Angular
-2. Angular envía: POST https://ytoledo.es/ytoledo/api/auth/login
-3. Nginx detecta: "/ytoledo/" → Es para backend
-4. Nginx proxy: POST http://ytoledo:5555/ytoledo/api/auth/login
+2. Angular envía: POST https://app-base.es/app-base/api/auth/login
+3. Nginx detecta: "/app-base/" → Es para backend
+4. Nginx proxy: POST http://app-base:5555/app-base/api/auth/login
 5. Node.js procesa login
 6. Node.js responde: { token: "abc123" }
 7. Nginx reenvía respuesta al navegador
@@ -291,9 +291,9 @@ Nginx en tu servidor:
 
 ### **Ejemplo 3: WebSocket para tiempo real**
 ```
-1. Angular conecta: wss://ytoledo.es/ytoledo/socket.io/
+1. Angular conecta: wss://app-base.es/app-base/socket.io/
 2. Nginx detecta: WebSocket upgrade
-3. Nginx proxy: ws://ytoledo:5555/ytoledo/socket.io/
+3. Nginx proxy: ws://app-base:5555/app-base/socket.io/
 4. Node.js acepta conexión WebSocket
 5. ✅ Comunicación en tiempo real establecida
 ```

@@ -121,7 +121,7 @@ export class AuthController {
 
             const route = config.url + '/recovery/' + token;
 
-            const dirLogo = path.resolve('./files/images/logo.png');
+            const dirLogo = path.resolve('./files/images/logo_seahorse_normal.png');
 
             let message = {
                 from: process.env.APP_MAILER_USER,
@@ -141,7 +141,7 @@ export class AuthController {
                     ${signatureHTML}
             `,
                 attachments: [{
-                    filename: 'logo.png',
+                    filename: 'logo_seahorse_normal.png',
                     path: dirLogo,
                     cid: 'logo'
                 }]
@@ -168,6 +168,8 @@ export class AuthController {
             const user = await this.userService.getUserByNameOrEmail(decoded.user.username);
             if (!user) { throw new ControlException('No ha sido encontrado el usuario', 500); }
 
+            await this.authService.validateRecoveryToken(user.id, req.tokenRecovery);
+
             const data = {user: null};
             data.user = user;
 
@@ -182,4 +184,3 @@ export class AuthController {
     }
 
 }
-

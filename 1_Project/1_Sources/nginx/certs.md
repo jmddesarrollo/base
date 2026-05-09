@@ -48,7 +48,7 @@ http {
         ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
-            proxy_pass http://ytoledo:5555;
+            proxy_pass http://app-base:5555;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -74,7 +74,7 @@ nginx:
     - "80:80"
     - "443:443"
   depends_on:
-    - ytoledo
+    - app-base
 ```
 
 ---
@@ -233,16 +233,16 @@ Certbot has set up a scheduled task to automatically renew this certificate in t
 
 
 Successfully received certificate.
-Certificate is saved at: /etc/letsencrypt/live/y-toledo.es/fullchain.pem
-Key is saved at:         /etc/letsencrypt/live/y-toledo.es/privkey.pem
+Certificate is saved at: /etc/letsencrypt/live/app-base.es/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/app-base.es/privkey.pem
 This certificate expires on 2025-02-24.
 These files will be updated when the certificate renews.
 Certbot has set up a scheduled task to automatically renew this certificate in the background.
 
 
 Successfully received certificate.
-Certificate is saved at: /etc/letsencrypt/live/y-toledo.es/fullchain.pem
-Key is saved at:         /etc/letsencrypt/live/y-toledo.es/privkey.pem
+Certificate is saved at: /etc/letsencrypt/live/app-base.es/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/app-base.es/privkey.pem
 This certificate expires on 2025-02-24.
 These files will be updated when the certificate renews.
 Certbot has set up a scheduled task to automatically renew this certificate in the background.
