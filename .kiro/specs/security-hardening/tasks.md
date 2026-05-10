@@ -150,18 +150,18 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - _Requisitos: 5.3, 5.4_
 
 - [ ] 8. Sanitización de inputs en controladores WebSocket
-  - [ ] 8.1 Aplicar `InputSanitizer` en `controllers/ws/auth.controller.ts`
+  - [x] 8.1 Aplicar `InputSanitizer` en `controllers/ws/auth.controller.ts`
     - Sanitizar `userName` y `password` en `login()`
     - Sanitizar `userName` en `recoveryPassword()`
     - Sanitizar `tokenRecovery` en `validateTokenRecovery()`
     - _Requisitos: 9.1, 9.2, 9.4, 9.5_
 
-  - [ ] 8.2 Aplicar `InputSanitizer` en `controllers/ws/user.controller.ts`
+  - [x] 8.2 Aplicar `InputSanitizer` en `controllers/ws/user.controller.ts`
     - Sanitizar todos los campos de string del objeto `user` en `addUser()` y `editUser()`
     - Validar que `id` es un entero positivo en `getUser()`, `editUser()`, `delUser()`
     - _Requisitos: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-  - [ ] 8.3 Aplicar `InputSanitizer` en los demás controladores (`permission.controller.ts`, `role.controller.ts`, `email.controller.ts`)
+  - [x] 8.3 Aplicar `InputSanitizer` en los demás controladores (`permission.controller.ts`, `role.controller.ts`, `email.controller.ts`)
     - Sanitizar campos string y validar campos numéricos en todos los eventos WebSocket
     - _Requisitos: 9.1, 9.2, 9.3, 9.4, 9.5_
 

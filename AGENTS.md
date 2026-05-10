@@ -1,4 +1,4 @@
-# AGENTS.md - Project Guidelines for Agentic Coding
+# AGENTS.md - OpenCode Agent Guidelines
 
 ## Project Overview
 
@@ -8,6 +8,12 @@ This is a full-stack application with:
 - **Communication**: Real-time via Socket.io
 
 Project root: `/home/jmolero/Repository/base/1_Project/1_Sources/`
+
+Agent context docs:
+- `1_Project/2_Docs/agent-context/architecture.md`
+- `1_Project/2_Docs/agent-context/security-hardening.md`
+- `1_Project/2_Docs/agent-context/project-base-template.md`
+- `1_Project/2_Docs/agent-context/active-tasks.md`
 
 ---
 
@@ -60,8 +66,8 @@ npm install
 npm start
 # or: npm run ng serve -o
 
-# Build for production
-npm run build
+# Build application
+npx ng build
 
 # Run tests (Karma)
 npm test

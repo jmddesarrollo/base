@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 
 import ControlException from '../../utils/controlException';
+import { InputSanitizer } from '../../utils/inputSanitizer';
 
 import RoleService from '../../services/role';
 import { AuthService, UserService } from '../../services/user';
@@ -52,8 +53,8 @@ export class UsersController {
      * Consultar un usuario
      */    
     public async getUser(req: any, socket: Socket ) {
-        const userId = req.userId;
-        
+        const userId = InputSanitizer.validatePositiveInt(req.userId, 'userId');
+
         try {
             this.mode = 'reading';
 
@@ -79,8 +80,19 @@ export class UsersController {
     public async addUser(req: any, socket: Socket) {
         const user = req.user;
 
+        InputSanitizer.requireField(user, 'user');
+        const sanitizedUser = InputSanitizer.sanitizeObject(user, {
+            name: { type: 'string', maxLength: 100, required: true },
+            lastname: { type: 'string', maxLength: 100 },
+            email: { type: 'string', maxLength: 100, required: true },
+            username: { type: 'string', maxLength: 45, required: true },
+            password: { type: 'string', maxLength: 100, required: true },
+            role_id: { type: 'number', required: true },
+            active: { type: 'boolean' }
+        });
+
         // Iniciar transacción
-        let t = await sequelize.transaction(); 
+        let t = await sequelize.transaction();
 
         try {
             this.mode = 'writing';
@@ -88,10 +100,10 @@ export class UsersController {
             const tokenDecoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
             await this.AuthorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
 
-            const role = await this.roleService.getRole(user.role_id);
+            const role = await this.roleService.getRole(sanitizedUser.role_id);
             if (!role) throw new ControlException('El rol asociado no existe', 500);
-            
-            const data = await this.userService.addUser(user, t);
+
+            const data = await this.userService.addUser(sanitizedUser, t);
     
             t.commit();
     
@@ -114,8 +126,21 @@ export class UsersController {
     public async editUser(req: any, socket: Socket) {
         const user = req.user;
 
+        InputSanitizer.requireField(user, 'user');
+        InputSanitizer.validatePositiveInt(user.id, 'user.id');
+
+        const sanitizedUser = InputSanitizer.sanitizeObject(user, {
+            id: { type: 'number', required: true },
+            name: { type: 'string', maxLength: 100 },
+            lastname: { type: 'string', maxLength: 100 },
+            email: { type: 'string', maxLength: 100 },
+            username: { type: 'string', maxLength: 45 },
+            role_id: { type: 'number' },
+            active: { type: 'boolean' }
+        });
+
         // Iniciar transacción
-        let t = await sequelize.transaction(); 
+        let t = await sequelize.transaction();
 
         try {
             this.mode = 'writing';
@@ -123,13 +148,13 @@ export class UsersController {
             const tokenDecoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
             await this.AuthorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
 
-            const userPrev = await this.userService.getUser(user.id);
-            const role = await this.roleService.getRole(user.role_id);
+            const userPrev = await this.userService.getUser(sanitizedUser.id);
+            const role = await this.roleService.getRole(sanitizedUser.role_id);
             if (!role) throw new ControlException('El rol asociado no existe', 500);
 
-            await this.userService.validateEditUserDefault(user, tokenDecoded);
+            await this.userService.validateEditUserDefault(sanitizedUser, tokenDecoded);
 
-            const data     = await this.userService.editUser(user, t);
+            const data = await this.userService.editUser(sanitizedUser, t);
     
             t.commit();
     
@@ -157,8 +182,14 @@ export class UsersController {
         const user = req.user;
         const recovery = req.recovery === true;
 
+        InputSanitizer.requireField(user, 'user');
+        const sanitizedUser = InputSanitizer.sanitizeObject(user, {
+            id: { type: 'number', required: true },
+            password: { type: 'string', maxLength: 100 }
+        });
+
         // Iniciar transacción
-        let t = await sequelize.transaction(); 
+        let t = await sequelize.transaction();
 
         try {
             this.mode = 'writing';
@@ -166,19 +197,18 @@ export class UsersController {
             const tokenDecoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
 
             if (recovery) {
-                if (tokenDecoded.user.id !== user.id) { throw new ControlException('El token de recuperación no corresponde al usuario', 401); }
+                if (tokenDecoded.user.id !== sanitizedUser.id) { throw new ControlException('El token de recuperación no corresponde al usuario', 401); }
 
-                await this.authService.validateRecoveryToken(user.id, req.token);
-            } else if (tokenDecoded.user.id !== user.id) {
+                await this.authService.validateRecoveryToken(sanitizedUser.id, req.token);
+            } else if (tokenDecoded.user.id !== sanitizedUser.id) {
                 await this.AuthorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
 
-                // Si el usuario conectado es distinto del usuario a editar, la contraseña generada será aleatoria
-                user.password = this.userService.generatePasswordRandom();
-            }     
-            
-            await this.userService.validateEditPasswordUserDefault(user, tokenDecoded);
+                sanitizedUser.password = this.userService.generatePasswordRandom();
+            }
 
-            const data = await this.userService.editPasswordUser(user, t);
+            await this.userService.validateEditPasswordUserDefault(sanitizedUser, tokenDecoded);
+
+            const data = await this.userService.editPasswordUser(sanitizedUser, t);
 
             if (recovery) {
                 await this.authService.consumeRecoveryToken(user.id, user.username);
@@ -207,10 +237,11 @@ export class UsersController {
      */        
     public async delUser(req: any, socket: Socket) {
         const user = req.user;
-        const userId = user.id;
+        InputSanitizer.requireField(user, 'user');
+        const userId = InputSanitizer.validatePositiveInt(user.id, 'user.id');
 
         // Iniciar transacción
-        let t = await sequelize.transaction(); 
+        let t = await sequelize.transaction();
 
         try {
             this.mode = 'writing';
@@ -218,7 +249,7 @@ export class UsersController {
             const tokenDecoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
             await this.AuthorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
 
-            await this.userService.validateDeleteUserDefault(userId);            
+            await this.userService.validateDeleteUserDefault(userId);
 
             await this.userService.delUser(userId, t);
 

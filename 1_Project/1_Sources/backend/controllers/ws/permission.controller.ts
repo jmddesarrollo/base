@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 
 import ControlException from '../../utils/controlException';
+import { InputSanitizer } from '../../utils/inputSanitizer';
 
 import PermissionService from '../../services/permission';
 import RolesService from '../../services/role';
@@ -111,6 +112,14 @@ export default class PermissionController {
     public async addPermission(req: any, socket: Socket) {
         const RoleHasPermission = req.RoleHasPermission;
 
+        InputSanitizer.requireField(RoleHasPermission, 'RoleHasPermission');
+        const sanitized = InputSanitizer.sanitizeObject(RoleHasPermission, {
+            permissions_id: { type: 'number', required: true },
+            roles_id: { type: 'number', required: true },
+            reading: { type: 'boolean' },
+            writing: { type: 'boolean' }
+        });
+
         // Iniciar transacción
         let t = await sequelize.transaction();
 
@@ -120,15 +129,14 @@ export default class PermissionController {
             const tokenDecoded = await this.AuthorizedMiddleware.checkToken(req.token, socket);
             await this.AuthorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
 
-            const permission = this.permissionService.getPermission(RoleHasPermission.permissions_id);
+            const permission = this.permissionService.getPermission(sanitized.permissions_id);
             if(!permission) throw new ControlException('El permiso no ha sido encontrado', 500);
 
-            const role = await this.roleService.getRole(RoleHasPermission.roles_id);
+            const role = await this.roleService.getRole(sanitized.roles_id);
             if (!role) throw new ControlException('El rol no ha sido encontrado', 500);
-            
-            // primero se elimina el permiso y luego se da de alta con los nuevos valores
-            await this.permissionService.delRoleHasPermission(RoleHasPermission.permissions_id, RoleHasPermission.roles_id, t);
-            const data = await this.permissionService.addRoleHasPermission(RoleHasPermission, t);
+
+            await this.permissionService.delRoleHasPermission(sanitized.permissions_id, sanitized.roles_id, t);
+            const data = await this.permissionService.addRoleHasPermission(sanitized, t);
     
             t.commit();
     
@@ -149,8 +157,8 @@ export default class PermissionController {
      * Eliminar un permiso asociado a un rol
      */
     public async delPermission(req: any, socket: Socket) {
-        const permissions_id = req.permissions_id;
-        const roles_id       = req.roles_id;
+        const permissions_id = InputSanitizer.validatePositiveInt(req.permissions_id, 'permissions_id');
+        const roles_id = InputSanitizer.validatePositiveInt(req.roles_id, 'roles_id');
 
         // Iniciar transacción
         let t = await sequelize.transaction();
@@ -168,7 +176,7 @@ export default class PermissionController {
 
             const role = await this.roleService.getRole(roles_id);
             if (!role) throw new ControlException('El rol no ha sido encontrado', 500);
-            
+
             await this.permissionService.delRoleHasPermission(permissions_id, roles_id, t);
             const data = {permissions_id, roles_id};            
     

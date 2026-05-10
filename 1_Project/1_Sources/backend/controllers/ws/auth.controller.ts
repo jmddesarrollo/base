@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 
 import ControlException from '../../utils/controlException';
+import { InputSanitizer } from '../../utils/inputSanitizer';
 import { AuthService, UserService } from '../../services/user';
 
 import AuthorizedMiddleware from '../../server/middlewares/authorized.middleware';
@@ -27,11 +28,19 @@ export class AuthController {
     constructor() { }
 
     public async login(req: any, socket: Socket) {
+        InputSanitizer.requireField(req.userName, 'userName');
+        InputSanitizer.requireField(req.password, 'password');
+
+        const sanitized = InputSanitizer.sanitizeObject(req, {
+            userName: { type: 'string', maxLength: 45, required: true },
+            password: { type: 'string', maxLength: 100, required: true }
+        });
+
         // Iniciar transacción
-        let t = await sequelize.transaction(); 
+        let t = await sequelize.transaction();
 
         try {
-            const data = await this.authService.login(req.userName, req.password, t);
+            const data = await this.authService.login(sanitized.userName, sanitized.password, t);
 
             t.commit();
 
@@ -107,10 +116,11 @@ export class AuthController {
     public async recoveryPassword(req: any, socket: Socket) {
         const mailSMTP = new mailSMTPClass();
 
-        const userName = req.userName;
+        InputSanitizer.requireField(req.userName, 'userName');
+        const sanitizedUserName = InputSanitizer.sanitizeString(req.userName, 45);
 
         try {
-            const user = await this.userService.getUserByNameOrEmail(userName);
+            const user = await this.userService.getUserByNameOrEmail(sanitizedUserName);
 
             if (!user) { throw new ControlException('El usuario no está registrado', 500); }
             if (!user.active) { throw new ControlException('El usuario está deshabilitado', 500); }
@@ -160,15 +170,18 @@ export class AuthController {
     }
 
     public async validateTokenRecovery(req: any, socket: Socket) {
+        InputSanitizer.requireField(req.tokenRecovery, 'tokenRecovery');
+        const sanitizedTokenRecovery = InputSanitizer.sanitizeString(req.tokenRecovery, 500);
+
         try {
-            const decoded = await this.AuthorizedMiddleware.checkToken(req.tokenRecovery, socket, true);
+            const decoded = await this.AuthorizedMiddleware.checkToken(sanitizedTokenRecovery, socket, true);
 
             if (!decoded.user) { throw new ControlException('No ha sido encontrado el usuario', 500); }
 
             const user = await this.userService.getUserByNameOrEmail(decoded.user.username);
             if (!user) { throw new ControlException('No ha sido encontrado el usuario', 500); }
 
-            await this.authService.validateRecoveryToken(user.id, req.tokenRecovery);
+            await this.authService.validateRecoveryToken(user.id, sanitizedTokenRecovery);
 
             const data = {user: null};
             data.user = user;

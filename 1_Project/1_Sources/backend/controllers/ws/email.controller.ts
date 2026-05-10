@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 
 import ControlException from '../../utils/controlException';
+import { InputSanitizer } from '../../utils/inputSanitizer';
 
 import EmailService from '../../services/email';
 import RoleService from '../../services/role';
@@ -29,8 +30,8 @@ export class EmailController {
      * Enviar un email de alta de usuario
      */    
     public async sendEmailUserAdd(req: any, socket: Socket ) {
-        const userId = req.userId;
-        
+        const userId = InputSanitizer.validatePositiveInt(req.userId, 'userId');
+
         try {
             this.mode = 'writing';
 
@@ -56,9 +57,20 @@ export class EmailController {
      * Enviar un email de edición de usuario
      */    
      public async sendEmailUserEdit(req: any, socket: Socket ) {
-        const userId = req.userId;
-        const userPrev = req.userPrev;
-        
+        const userId = InputSanitizer.validatePositiveInt(req.userId, 'userId');
+
+        let userPrev = req.userPrev;
+        if (userPrev) {
+            userPrev = InputSanitizer.sanitizeObject(userPrev, {
+                username: { type: 'string', maxLength: 45 },
+                name: { type: 'string', maxLength: 100 },
+                lastname: { type: 'string', maxLength: 100 },
+                email: { type: 'string', maxLength: 100 },
+                role_id: { type: 'number' },
+                active: { type: 'boolean' }
+            });
+        }
+
         try {
             this.mode = 'writing';
 
@@ -92,9 +104,9 @@ export class EmailController {
      * Enviar un email de edición de contraseña al usuario
      */    
     public async sendEmailUserEditPassword(req: any, socket: Socket ) {
-        const userId = req.userId;        
-        
-        try {    
+        const userId = InputSanitizer.validatePositiveInt(req.userId, 'userId');
+
+        try {
             const user = await this.userService.getUser(userId);
     
             const data = await this.emailService.sendEmailUserEditPassword(user);
@@ -113,14 +125,14 @@ export class EmailController {
      * Enviar un email de restaruación de contraseña al usuario
      */    
      public async sendEmailUserRestorePassword(req: any, socket: Socket ) {
-        const userId = req.userId;        
-        
+        const userId = InputSanitizer.validatePositiveInt(req.userId, 'userId');
+
         try {
             this.mode = 'writing';
-    
+
             const tokenDecoded = await this.authorizedMiddleware.checkToken(req.token, socket);
             await this.authorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
-    
+
             const user = await this.userService.getUser(userId);
     
             const data = await this.emailService.sendEmailUserRestorePassword(user);
@@ -139,15 +151,25 @@ export class EmailController {
      * Enviar un email de eliminación de usuario
      */    
      public async sendEmailUserDelete(req: any, socket: Socket ) {
-        const user = req.user;
-        
+        let userToSend = req.user;
+
+        if (userToSend) {
+            userToSend = InputSanitizer.sanitizeObject(userToSend, {
+                id: { type: 'number' },
+                name: { type: 'string', maxLength: 100 },
+                lastname: { type: 'string', maxLength: 100 },
+                email: { type: 'string', maxLength: 100 },
+                username: { type: 'string', maxLength: 45 }
+            });
+        }
+
         try {
             this.mode = 'writing';
 
             const tokenDecoded = await this.authorizedMiddleware.checkToken(req.token, socket);
             await this.authorizedMiddleware.isAllowed(tokenDecoded, this.permissionType, this.mode, socket);
 
-            const data = await this.emailService.sendEmailUserDelete(user);
+            const data = await this.emailService.sendEmailUserDelete(userToSend);
             
             socket.emit("user/sendEmailUserDelete", { data, message: 'Se ha enviado un email al usuario eliminado satisfactoriamente' });
         } catch(error) {
