@@ -12,6 +12,7 @@ import { TitleShareService } from './services/share/title.service';
 import { WRPermissionShareService } from './services/share/wr-permission';
 import { UserService } from './services/websockets/user.service';
 import { WebsocketService } from './services/websocket.service';
+import { InactivityService } from './services/share/inactivity.service';
 
 import { MenuItem } from 'primeng/api';
 
@@ -46,6 +47,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private observables = new Array();
 
+  public showInactivityWarning = false;
+
   constructor(
     private router: Router,
     private titleBrowser: Title,
@@ -56,7 +59,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private permissionService: PermissionService,
     private userService: UserService,
     private myPermissionShareService: MyPermissionShareService,
-    public websocketService: WebsocketService
+    public websocketService: WebsocketService,
+    private inactivityService: InactivityService
   ) {
     this.title = null;
     this.wrPermission = 'U';
@@ -72,7 +76,20 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.websocketService.token) this.loginOn = true;
+    if (this.websocketService.token) {
+      this.loginOn = true;
+      this.inactivityService.startWatching();
+    }
+
+    this.inactivityService.warning$.subscribe(() => {
+      this.showInactivityWarning = true;
+    });
+
+    this.inactivityService.logout$.subscribe(() => {
+      this.showInactivityWarning = false;
+      this.logout();
+      this.messageService.add({ severity: 'warn', summary: 'Sesión', detail: 'Sesión expirada por inactividad', life: 4000 });
+    });
 
     this.items = [
       {
@@ -163,6 +180,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
+  extendSession() {
+    this.showInactivityWarning = false;
+    this.authService.renewToken();
+    this.inactivityService.resetTimer();
+  }
+
   /**
    * Recoger información ofrecida desde el archivo routing en parámetro data
    */
@@ -189,6 +212,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.router.navigate(['/login']);
     this.loginOn = false;
+
+    this.inactivityService.stopWatching();
+    this.showInactivityWarning = false;
   }
 
   /**
@@ -370,6 +396,8 @@ export class AppComponent implements OnInit, OnDestroy {
       this.websocketService.setSessionOn(true);
 
       this.getMyPermissionsHasRoles();
+
+      this.inactivityService.startWatching();
     });
 
     this.observables.push(ob);

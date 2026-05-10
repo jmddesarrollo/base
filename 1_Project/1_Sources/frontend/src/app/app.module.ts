@@ -43,6 +43,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -101,6 +102,7 @@ import { UsersListComponent } from './components/users/users-list/users-list.com
     CardModule,
     CheckboxModule,
     ConfirmPopupModule,
+    ConfirmDialogModule,
     DialogModule,
     DropdownModule,
     FileUploadModule,

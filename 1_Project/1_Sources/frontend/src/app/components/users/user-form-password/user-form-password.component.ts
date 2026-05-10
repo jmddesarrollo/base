@@ -13,6 +13,9 @@ import { WebsocketService } from '../../../services/websocket.service';
 // Modelos
 import { UserModel } from '../../../models/user.model';
 
+// Validación de contraseña
+import { validatePassword, PasswordValidationResult } from '../../../utils/password-validator';
+
 @Component({
   selector: 'app-user-form-password',
   templateUrl: './user-form-password.component.html',
@@ -31,6 +34,20 @@ export class UserFormPasswordComponent implements OnInit, OnDestroy {
   public myUserId: number;
 
   private observables = new Array();
+
+  get passwordErrors(): string[] {
+    const passwordControl = this.forma.get('password');
+    if (!passwordControl?.value) {
+      return [];
+    }
+    const result = validatePassword(passwordControl.value);
+    return result.errors;
+  }
+
+  get showPasswordErrors(): boolean {
+    const passwordControl = this.forma.get('password');
+    return passwordControl?.touched && passwordControl?.value?.length > 0;
+  }
 
   constructor(
     private emailService: EmailService,

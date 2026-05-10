@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   wsURL: 'http://localhost:5555',
-  service: 'app-base'
+  service: 'app-base',
+  inactivityTimeoutMinutes: 10
 };
 
 /*

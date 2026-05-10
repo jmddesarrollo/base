@@ -42,3 +42,17 @@
 </div>
 
 <p-toast></p-toast>
+
+<p-confirmDialog></p-confirmDialog>
+
+<div class="inactivity-modal" *ngIf="showInactivityWarning">
+    <div class="inactivity-modal-content">
+        <h3>Sesión a punto de expirar</h3>
+        <p>Tu sesión expirará en 2 minutos debido a inactividad.</p>
+        <p>¿Deseas continuar?</p>
+        <div class="inactivity-modal-buttons">
+            <button pButton label="Continuar sesión" (click)="extendSession()" class="p-button-success"></button>
+            <button pButton label="Cerrar sesión" (click)="logout()" class="p-button-danger"></button>
+        </div>
+    </div>
+</div>
