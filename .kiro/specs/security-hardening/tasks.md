@@ -207,7 +207,7 @@ Implementación incremental del endurecimiento de seguridad de App Base. Las tar
     - Emitir `auth/renewToken` si el usuario elige extender la sesión
     - _Requisitos: 4.2, 4.3, 4.4_
 
-- [ ] 11. Checkpoint final — Verificar integración completa
+- [x] 11. Checkpoint final — Verificar integración completa
   - Ejecutar todos los tests (backend y frontend). Verificar que el servidor arranca con la nueva configuración. Verificar que el flujo completo de login, logout por inactividad y recuperación de contraseña funciona correctamente. Consultar al usuario si surgen dudas.
 
 ## Notas
